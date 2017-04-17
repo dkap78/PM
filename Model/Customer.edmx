@@ -1,0 +1,433 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="DataModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Customer">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="400" Nullable="false" />
+          <Property Name="FamilyID" Type="int" />
+          <Property Name="Gender" Type="int" Nullable="false" />
+          <Property Name="DOB" Type="date" />
+          <Property Name="Relationship" Type="int" />
+          <Property Name="AadharNo" Type="varchar" MaxLength="10" />
+          <Property Name="PANNo" Type="varchar" MaxLength="10" />
+          <Property Name="LandlineNo" Type="varchar" MaxLength="20" />
+          <Property Name="CellNo" Type="varchar" MaxLength="20" />
+          <Property Name="EmailAddress" Type="varchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="Family">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="InvestmentDetail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="CustomerID" Type="int" />
+          <Property Name="SchemeID" Type="int" />
+          <Property Name="Amount" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="StartDate" Type="date" />
+          <Property Name="Interest" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="MaturityDate" Type="date" />
+          <Property Name="SecondHolderID" Type="int" />
+          <Property Name="ThirdHolderID" Type="int" />
+        </EntityType>
+        <EntityType Name="Scheme">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Scheme" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Description" Type="varchar" MaxLength="1000" />
+          <Property Name="InterestCalculationType" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SchemeDetail">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="SchemeID" Type="int" Nullable="false" />
+          <Property Name="InterestRate" Type="numeric" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="EffectiveStartDate" Type="date" Nullable="false" />
+          <Property Name="EffectiveEndDate" Type="date" />
+        </EntityType>
+        <Association Name="FK_Customer_FamilyID">
+          <End Role="Family" Type="Self.Family" Multiplicity="0..1" />
+          <End Role="Customer" Type="Self.Customer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Family">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Customer">
+              <PropertyRef Name="FamilyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_InvestmentDetail_CustomerID">
+          <End Role="Customer" Type="Self.Customer" Multiplicity="0..1" />
+          <End Role="InvestmentDetail" Type="Self.InvestmentDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="InvestmentDetail">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_InvestmentDetail_SchemeID">
+          <End Role="Scheme" Type="Self.Scheme" Multiplicity="0..1" />
+          <End Role="InvestmentDetail" Type="Self.InvestmentDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Scheme">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="InvestmentDetail">
+              <PropertyRef Name="SchemeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_InvestmentDetail_SecondHolderID">
+          <End Role="Customer" Type="Self.Customer" Multiplicity="0..1" />
+          <End Role="InvestmentDetail" Type="Self.InvestmentDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="InvestmentDetail">
+              <PropertyRef Name="SecondHolderID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_InvestmentDetail_ThirdHolderID">
+          <End Role="Customer" Type="Self.Customer" Multiplicity="0..1" />
+          <End Role="InvestmentDetail" Type="Self.InvestmentDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="InvestmentDetail">
+              <PropertyRef Name="ThirdHolderID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SchemeDetail_SchemeID">
+          <End Role="Scheme" Type="Self.Scheme" Multiplicity="1" />
+          <End Role="SchemeDetail" Type="Self.SchemeDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Scheme">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SchemeDetail">
+              <PropertyRef Name="SchemeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="DataModelStoreContainer">
+          <EntitySet Name="Customer" EntityType="Self.Customer" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Family" EntityType="Self.Family" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="InvestmentDetail" EntityType="Self.InvestmentDetail" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Scheme" EntityType="Self.Scheme" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SchemeDetail" EntityType="Self.SchemeDetail" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Customer_FamilyID" Association="Self.FK_Customer_FamilyID">
+            <End Role="Family" EntitySet="Family" />
+            <End Role="Customer" EntitySet="Customer" />
+          </AssociationSet>
+          <AssociationSet Name="FK_InvestmentDetail_CustomerID" Association="Self.FK_InvestmentDetail_CustomerID">
+            <End Role="Customer" EntitySet="Customer" />
+            <End Role="InvestmentDetail" EntitySet="InvestmentDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_InvestmentDetail_SchemeID" Association="Self.FK_InvestmentDetail_SchemeID">
+            <End Role="Scheme" EntitySet="Scheme" />
+            <End Role="InvestmentDetail" EntitySet="InvestmentDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_InvestmentDetail_SecondHolderID" Association="Self.FK_InvestmentDetail_SecondHolderID">
+            <End Role="Customer" EntitySet="Customer" />
+            <End Role="InvestmentDetail" EntitySet="InvestmentDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_InvestmentDetail_ThirdHolderID" Association="Self.FK_InvestmentDetail_ThirdHolderID">
+            <End Role="Customer" EntitySet="Customer" />
+            <End Role="InvestmentDetail" EntitySet="InvestmentDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SchemeDetail_SchemeID" Association="Self.FK_SchemeDetail_SchemeID">
+            <End Role="Scheme" EntitySet="Scheme" />
+            <End Role="SchemeDetail" EntitySet="SchemeDetail" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="DataModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Customer">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="400" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="FamilyID" Type="Int32" />
+          <Property Name="Gender" Type="Int32" Nullable="false" />
+          <Property Name="DOB" Type="DateTime" Precision="0" />
+          <Property Name="Relationship" Type="Int32" />
+          <Property Name="AadharNo" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="PANNo" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="LandlineNo" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="CellNo" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="EmailAddress" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Family" Relationship="Self.FK_Customer_FamilyID" FromRole="Customer" ToRole="Family" />
+          <NavigationProperty Name="InvestmentDetails" Relationship="Self.FK_InvestmentDetail_CustomerID" FromRole="Customer" ToRole="InvestmentDetail" />
+          <NavigationProperty Name="InvestmentDetails1" Relationship="Self.FK_InvestmentDetail_SecondHolderID" FromRole="Customer" ToRole="InvestmentDetail" />
+          <NavigationProperty Name="InvestmentDetails2" Relationship="Self.FK_InvestmentDetail_ThirdHolderID" FromRole="Customer" ToRole="InvestmentDetail" />
+        </EntityType>
+        <EntityType Name="Family">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Customers" Relationship="Self.FK_Customer_FamilyID" FromRole="Family" ToRole="Customer" />
+        </EntityType>
+        <EntityType Name="InvestmentDetail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="CustomerID" Type="Int32" />
+          <Property Name="SchemeID" Type="Int32" />
+          <Property Name="Amount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="StartDate" Type="DateTime" Precision="0" />
+          <Property Name="Interest" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="MaturityDate" Type="DateTime" Precision="0" />
+          <Property Name="SecondHolderID" Type="Int32" />
+          <Property Name="ThirdHolderID" Type="Int32" />
+          <NavigationProperty Name="Customer" Relationship="Self.FK_InvestmentDetail_CustomerID" FromRole="InvestmentDetail" ToRole="Customer" />
+          <NavigationProperty Name="Customer1" Relationship="Self.FK_InvestmentDetail_SecondHolderID" FromRole="InvestmentDetail" ToRole="Customer" />
+          <NavigationProperty Name="Customer2" Relationship="Self.FK_InvestmentDetail_ThirdHolderID" FromRole="InvestmentDetail" ToRole="Customer" />
+          <NavigationProperty Name="Scheme" Relationship="Self.FK_InvestmentDetail_SchemeID" FromRole="InvestmentDetail" ToRole="Scheme" />
+        </EntityType>
+        <EntityType Name="Scheme">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Scheme1" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="InterestCalculationType" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="InvestmentDetails" Relationship="Self.FK_InvestmentDetail_SchemeID" FromRole="Scheme" ToRole="InvestmentDetail" />
+          <NavigationProperty Name="SchemeDetails" Relationship="Self.FK_SchemeDetail_SchemeID" FromRole="Scheme" ToRole="SchemeDetail" />
+        </EntityType>
+        <EntityType Name="SchemeDetail">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="SchemeID" Type="Int32" Nullable="false" />
+          <Property Name="InterestRate" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="EffectiveStartDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="EffectiveEndDate" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="Scheme" Relationship="Self.FK_SchemeDetail_SchemeID" FromRole="SchemeDetail" ToRole="Scheme" />
+        </EntityType>
+        <Association Name="FK_Customer_FamilyID">
+          <End Role="Family" Type="Self.Family" Multiplicity="0..1" />
+          <End Role="Customer" Type="Self.Customer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Family">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Customer">
+              <PropertyRef Name="FamilyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_InvestmentDetail_CustomerID">
+          <End Role="Customer" Type="Self.Customer" Multiplicity="0..1" />
+          <End Role="InvestmentDetail" Type="Self.InvestmentDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="InvestmentDetail">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_InvestmentDetail_SecondHolderID">
+          <End Role="Customer" Type="Self.Customer" Multiplicity="0..1" />
+          <End Role="InvestmentDetail" Type="Self.InvestmentDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="InvestmentDetail">
+              <PropertyRef Name="SecondHolderID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_InvestmentDetail_ThirdHolderID">
+          <End Role="Customer" Type="Self.Customer" Multiplicity="0..1" />
+          <End Role="InvestmentDetail" Type="Self.InvestmentDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="InvestmentDetail">
+              <PropertyRef Name="ThirdHolderID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_InvestmentDetail_SchemeID">
+          <End Role="Scheme" Type="Self.Scheme" Multiplicity="0..1" />
+          <End Role="InvestmentDetail" Type="Self.InvestmentDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Scheme">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="InvestmentDetail">
+              <PropertyRef Name="SchemeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SchemeDetail_SchemeID">
+          <End Role="Scheme" Type="Self.Scheme" Multiplicity="1" />
+          <End Role="SchemeDetail" Type="Self.SchemeDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Scheme">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SchemeDetail">
+              <PropertyRef Name="SchemeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="DataEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Customers" EntityType="Self.Customer" />
+          <EntitySet Name="Families" EntityType="Self.Family" />
+          <EntitySet Name="InvestmentDetails" EntityType="Self.InvestmentDetail" />
+          <EntitySet Name="Schemes" EntityType="Self.Scheme" />
+          <EntitySet Name="SchemeDetails" EntityType="Self.SchemeDetail" />
+          <AssociationSet Name="FK_Customer_FamilyID" Association="Self.FK_Customer_FamilyID">
+            <End Role="Family" EntitySet="Families" />
+            <End Role="Customer" EntitySet="Customers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_InvestmentDetail_CustomerID" Association="Self.FK_InvestmentDetail_CustomerID">
+            <End Role="Customer" EntitySet="Customers" />
+            <End Role="InvestmentDetail" EntitySet="InvestmentDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_InvestmentDetail_SecondHolderID" Association="Self.FK_InvestmentDetail_SecondHolderID">
+            <End Role="Customer" EntitySet="Customers" />
+            <End Role="InvestmentDetail" EntitySet="InvestmentDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_InvestmentDetail_ThirdHolderID" Association="Self.FK_InvestmentDetail_ThirdHolderID">
+            <End Role="Customer" EntitySet="Customers" />
+            <End Role="InvestmentDetail" EntitySet="InvestmentDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_InvestmentDetail_SchemeID" Association="Self.FK_InvestmentDetail_SchemeID">
+            <End Role="Scheme" EntitySet="Schemes" />
+            <End Role="InvestmentDetail" EntitySet="InvestmentDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SchemeDetail_SchemeID" Association="Self.FK_SchemeDetail_SchemeID">
+            <End Role="Scheme" EntitySet="Schemes" />
+            <End Role="SchemeDetail" EntitySet="SchemeDetails" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="DataModelStoreContainer" CdmEntityContainer="DataEntities">
+          <EntitySetMapping Name="Customers">
+            <EntityTypeMapping TypeName="DataModel.Customer">
+              <MappingFragment StoreEntitySet="Customer">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="FamilyID" ColumnName="FamilyID" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="DOB" ColumnName="DOB" />
+                <ScalarProperty Name="Relationship" ColumnName="Relationship" />
+                <ScalarProperty Name="AadharNo" ColumnName="AadharNo" />
+                <ScalarProperty Name="PANNo" ColumnName="PANNo" />
+                <ScalarProperty Name="LandlineNo" ColumnName="LandlineNo" />
+                <ScalarProperty Name="CellNo" ColumnName="CellNo" />
+                <ScalarProperty Name="EmailAddress" ColumnName="EmailAddress" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Families">
+            <EntityTypeMapping TypeName="DataModel.Family">
+              <MappingFragment StoreEntitySet="Family">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InvestmentDetails">
+            <EntityTypeMapping TypeName="DataModel.InvestmentDetail">
+              <MappingFragment StoreEntitySet="InvestmentDetail">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="SchemeID" ColumnName="SchemeID" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="Interest" ColumnName="Interest" />
+                <ScalarProperty Name="MaturityDate" ColumnName="MaturityDate" />
+                <ScalarProperty Name="SecondHolderID" ColumnName="SecondHolderID" />
+                <ScalarProperty Name="ThirdHolderID" ColumnName="ThirdHolderID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Schemes">
+            <EntityTypeMapping TypeName="DataModel.Scheme">
+              <MappingFragment StoreEntitySet="Scheme">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Scheme1" ColumnName="Scheme" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="InterestCalculationType" ColumnName="InterestCalculationType" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SchemeDetails">
+            <EntityTypeMapping TypeName="DataModel.SchemeDetail">
+              <MappingFragment StoreEntitySet="SchemeDetail">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="SchemeID" ColumnName="SchemeID" />
+                <ScalarProperty Name="InterestRate" ColumnName="InterestRate" />
+                <ScalarProperty Name="EffectiveStartDate" ColumnName="EffectiveStartDate" />
+                <ScalarProperty Name="EffectiveEndDate" ColumnName="EffectiveEndDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
